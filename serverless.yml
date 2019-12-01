@@ -1,13 +1,15 @@
-service: yolobe-template-azfx-${opt:stage}
+service: yolobe-template-azfx
 
 provider:
   name: azure
   location: West US
+  runtime: nodejs8
 
 plugins:
   - serverless-azure-functions
   - serverless-webpack
-  
+  - serverless-offline
+
 package:
   exclude:
     - node_modules/**
@@ -19,7 +21,12 @@ functions:
   echo:
      handler: src/index.echo
      events:
-       - http: true
+       - http:
+          path: /{action}
+          method: GET
+          request:
+            parameters:
+              action: true
          x-azure-settings:
            authLevel: anonymous
            methods: #<array> [GET, POST, PUT, DELETE], default - all
